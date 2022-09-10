@@ -24,28 +24,29 @@ public class Homework4_RestAssured {
     static void beforeAll() {
         RestAssured.baseURI = "https://api.spoonacular.com";
         RestAssured.requestSpecification = new RequestSpecBuilder()
-                .addParam("apiKey", "0970f5c615f14a2a91942df5a213e41c")
+                .addParam("apiKey", "a6d01b67a10243ad881e440e0359b7fe")
                 .build();
     }
 
     @Test
-    void testSearchBread() {
+    void test0_AddToShoppingList() {
 
         String actually = RestAssured.given()
-                .param("number", 3)
-                .param("limitLicense", true)
-                .param("query", "bread")
+                //.param("apiKey", "a6d01b67a10243ad881e440e0359b7fe")
+                .param("username", "your-users-name373")
+                .param("hash", "5203afbffc3a7f145414a92c6cade3e19f1d9664")
                 .log()
                 .uri()
                 .expect()
                 .statusCode(200)
                 .time(lessThanOrEqualTo(1500L))
-                .body("totalResults", is(175))
-                .body("results", hasSize(3))
+                .body("item", is("1 package baking powder"))
+                .body("aisle", is("Baking"))
+                .body("parse", is(true))
                 .log()
                 .body()
                 .when()
-                .get("/recipes/complexSearch")
+                .post("/mealplanner/your-users-name373/shopping-list/items")
                 .body()
                 .asPrettyString();
 
@@ -58,23 +59,23 @@ public class Homework4_RestAssured {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("resources")
-    void testImageRecognize(String image) {
-        RestAssured.given()
-                .log()
-                .all()
-                .param("imageUrl", image)
-                .expect()
-                .statusCode(200)
-                .body("status", is("success"))
-                .body("category", is("burger"))
-                .body("probability", greaterThan(0.6f))
-                .log()
-                .all()
-                .when()
-                .get("/food/images/classify");
-    }
+//    @ParameterizedTest
+//    @MethodSource("resources")
+//    void testImageRecognize(String image) {
+//        RestAssured.given()
+//                .log()
+//                .all()
+//                .param("imageUrl", image)
+//                .expect()
+//                .statusCode(200)
+//                .body("status", is("success"))
+//                .body("category", is("burger"))
+//                .body("probability", greaterThan(0.6f))
+//                .log()
+//                .all()
+//                .when()
+//                .get("/food/images/classify");
+//    }
 
     public static Stream<Arguments> resources() {
         Arguments f1 = Arguments.of("https://cdn.discordapp.com/icons/525976020919123981/f2ccc3ec3e36988bfa65da0bdae715c8.jpg");

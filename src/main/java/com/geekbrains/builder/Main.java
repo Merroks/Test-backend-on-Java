@@ -10,7 +10,7 @@ public class Main {
                 .setName("Ivan")
                 .setSurname("Ivanov")
                 .setAddress("Address")
-                .setEmail("123@ya.ru")
+                .setEmail("automatisationtesting@yandex.ru")
                 .build();
 
         // DSL - domain specific language

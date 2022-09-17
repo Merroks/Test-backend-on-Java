@@ -2,8 +2,11 @@ package com.geekbrains.spoonacullar.Homework4_RestAssured;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.stream.Stream;
 
+import static io.restassured.RestAssured.*;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.hamcrest.Matchers.*;
 
@@ -24,17 +28,28 @@ public class Homework4_RestAssured {
     static void beforeAll() {
         RestAssured.baseURI = "https://api.spoonacular.com";
         RestAssured.requestSpecification = new RequestSpecBuilder()
-                .addParam("apiKey", "a6d01b67a10243ad881e440e0359b7fe")
+                .addParam("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
                 .build();
     }
 
+//    @BeforeEach
+//    void beforeTest() {
+//        requestSpecification = new RequestSpecBuilder()
+//                .addQueryParam("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
+//                .addQueryParam("includeNutrition", "false")
+//                .addQueryParam("hash", "e9c97de3d2ec97cb715e1c50640b4c0df4e029d6")
+//                .log(LogDetail.ALL)
+//                .build();
+//    }
+
     @Test
+    @Order(1)
     void test0_AddToShoppingList() {
 
         String actually = RestAssured.given()
-                //.param("apiKey", "a6d01b67a10243ad881e440e0359b7fe")
-                .param("username", "your-users-name373")
-                .param("hash", "5203afbffc3a7f145414a92c6cade3e19f1d9664")
+                .param("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
+                .param("username", "your-users-name428")
+                .param("hash", "e9c97de3d2ec97cb715e1c50640b4c0df4e029d6")
                 .log()
                 .uri()
                 .expect()
@@ -46,7 +61,7 @@ public class Homework4_RestAssured {
                 .log()
                 .body()
                 .when()
-                .post("/mealplanner/your-users-name373/shopping-list/items")
+                .post("/mealplanner/your-users-name428/shopping-list/items")
                 .body()
                 .asPrettyString();
 

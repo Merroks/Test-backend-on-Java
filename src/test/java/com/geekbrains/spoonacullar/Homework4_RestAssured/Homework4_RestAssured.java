@@ -2,8 +2,11 @@ package com.geekbrains.spoonacullar.Homework4_RestAssured;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.stream.Stream;
 
+import static io.restassured.RestAssured.*;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.hamcrest.Matchers.*;
 
@@ -24,28 +28,40 @@ public class Homework4_RestAssured {
     static void beforeAll() {
         RestAssured.baseURI = "https://api.spoonacular.com";
         RestAssured.requestSpecification = new RequestSpecBuilder()
-                .addParam("apiKey", "0970f5c615f14a2a91942df5a213e41c")
+                .addParam("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
                 .build();
     }
 
+//    @BeforeEach
+//    void beforeTest() {
+//        requestSpecification = new RequestSpecBuilder()
+//                .addQueryParam("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
+//                .addQueryParam("includeNutrition", "false")
+//                .addQueryParam("hash", "e9c97de3d2ec97cb715e1c50640b4c0df4e029d6")
+//                .log(LogDetail.ALL)
+//                .build();
+//    }
+
     @Test
-    void testSearchBread() {
+    @Order(1)
+    void test0_AddToShoppingList() {
 
         String actually = RestAssured.given()
-                .param("number", 3)
-                .param("limitLicense", true)
-                .param("query", "bread")
+                .param("apiKey", "b1d0db4af49a401d9593fbbd4414cc96")
+                .param("username", "your-users-name428")
+                .param("hash", "e9c97de3d2ec97cb715e1c50640b4c0df4e029d6")
                 .log()
                 .uri()
                 .expect()
                 .statusCode(200)
                 .time(lessThanOrEqualTo(1500L))
-                .body("totalResults", is(175))
-                .body("results", hasSize(3))
+                .body("item", is("1 package baking powder"))
+                .body("aisle", is("Baking"))
+                .body("parse", is(true))
                 .log()
                 .body()
                 .when()
-                .get("/recipes/complexSearch")
+                .post("/mealplanner/your-users-name428/shopping-list/items")
                 .body()
                 .asPrettyString();
 
@@ -58,23 +74,23 @@ public class Homework4_RestAssured {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("resources")
-    void testImageRecognize(String image) {
-        RestAssured.given()
-                .log()
-                .all()
-                .param("imageUrl", image)
-                .expect()
-                .statusCode(200)
-                .body("status", is("success"))
-                .body("category", is("burger"))
-                .body("probability", greaterThan(0.6f))
-                .log()
-                .all()
-                .when()
-                .get("/food/images/classify");
-    }
+//    @ParameterizedTest
+//    @MethodSource("resources")
+//    void testImageRecognize(String image) {
+//        RestAssured.given()
+//                .log()
+//                .all()
+//                .param("imageUrl", image)
+//                .expect()
+//                .statusCode(200)
+//                .body("status", is("success"))
+//                .body("category", is("burger"))
+//                .body("probability", greaterThan(0.6f))
+//                .log()
+//                .all()
+//                .when()
+//                .get("/food/images/classify");
+//    }
 
     public static Stream<Arguments> resources() {
         Arguments f1 = Arguments.of("https://cdn.discordapp.com/icons/525976020919123981/f2ccc3ec3e36988bfa65da0bdae715c8.jpg");
